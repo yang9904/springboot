@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    status="warn" 日志框架本身的输出日志级别，可以修改为debug
+    monitorInterval="5" 自动加载配置文件的间隔时间，不低于 5秒；生产环境中修改配置文件，是热更新，无需重启应用
+ -->
+<configuration status="debug" monitorInterval="5">
+    <Properties>
+        <!--
+            格式化输出：
+            %d表示日期，
+            %thread表示线程名，
+            %-5level：级别从左显示5个字符宽度
+            %msg：日志消息，%n是换行符
+            %logger{36} 表示 Logger 名字最长36个字符
+        -->
+        <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level}[%thread] %style{%logger{36}}{cyan} : %msg%n" />
+
+        <!-- 定义日志存储的路径，不要配置相对路径 -->
+        <property name="FILE_PATH" value="D:/logs" />
+        <property name="FILE_NAME" value="springboot" />
+    </Properties>
+
+    <!-- 日志处理 -->
+    <Appenders>
+        <!-- 控制台输出 appender，SYSTEM_OUT输出黑色，SYSTEM_ERR输出红色 -->
+        <console name="Console" target="SYSTEM_OUT">
+            <!--输出日志的格式-->
+            <PatternLayout pattern="${LOG_PATTERN}" disableAnsi="false" noConsoleNoAnsi="false"/>
+            <!--控制台只输出level及其以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+        </console>
+
+        <!--
+        　　这个会打印出所有的info及以下级别的信息，每次大小超过size，
+        　　则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档
+        -->
+        <RollingFile name="RollingFileInfo" fileName="${FILE_PATH}/info.log" filePattern="${FILE_PATH}/${FILE_NAME}-INFO-%d{yyyy-MM-dd}_%i.log.gz">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!--interval属性用来指定多久滚动一次，默认是1 hour-->
+                <TimeBasedTriggeringPolicy interval="1"/>
+                <SizeBasedTriggeringPolicy size="20MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件开始覆盖 -->
+            <DefaultRolloverStrategy max="15"/>
+        </RollingFile>
+
+        <Async name="Async">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFileInfo" />
+        </Async>
+    </Appenders>
+
+    <!-- logger 定义 -->
+    <Loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.mybatis" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <!-- 自定义 logger 对象
+            includeLocation="false" 关闭日志记录的行号信息，开启的话会严重影响异步输出的性能
+            additivity="false" 不再继承 rootlogger对象
+         -->
+        <AsyncLogger name="com.log" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="Console" />
+        </AsyncLogger>
+        <!-- 使用 rootLogger 配置 日志级别 level="trace" -->
+        <Root level="trace">
+            <!-- 指定日志使用的处理器 -->
+            <!--AppenderRef ref="Console" /-->
+            <!-- 使用异步 appender -->
+            <AppenderRef ref="Async" />
+        </Root>
+    </Loggers>
+</configuration>

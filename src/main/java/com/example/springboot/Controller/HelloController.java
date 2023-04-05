@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 @RestController
 public class HelloController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HelloController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping("/hello")
     public String hello() {
@@ -18,7 +18,7 @@ public class HelloController {
         LOGGER.info("hello, I am info!");
         LOGGER.warn("hello, I am {}!", "warn");
         LOGGER.error("hello, I am {}!", "error");
-        return "Hello Spring Boot hhhhh!";
+        return "Hello Spring Boot!";
     }
 
 }
