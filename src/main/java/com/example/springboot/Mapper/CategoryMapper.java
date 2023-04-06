@@ -9,5 +9,13 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CategoryMapper {
 
     List<Category> findAll();
- 
+
+    public int save(Category category);
+
+    public void delete(int id);
+
+    public Category get(int id);
+
+    public int update(Category category);
+
 }

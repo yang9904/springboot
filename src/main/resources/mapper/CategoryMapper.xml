@@ -7,4 +7,20 @@
     <select id="findAll" resultType="Category">
         select * from category_
     </select>
+
+    <insert id="save">
+        insert into category_ values (null, #{name})
+    </insert>
+
+    <delete id="delete">
+        delete from category_ where id= #{id}
+    </delete>
+
+    <select id="get" resultType="Category">
+        select * from category_ where id= #{id}
+    </select>
+
+    <update id="update">
+        update category_ set name=#{name} where id=#{id}
+    </update>
 </mapper>
