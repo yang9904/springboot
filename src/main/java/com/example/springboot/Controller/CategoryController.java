@@ -2,6 +2,8 @@ package com.example.springboot.Controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,14 +17,16 @@ import java.util.List;
 
 @Controller
 public class CategoryController {
+    private final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
+
     @Autowired
     CategoryService categoryService;
-     
+
     @RequestMapping("/listCategory")
     public String listCategory(Model m, @RequestParam(value = "start", defaultValue = "1") int start,
                                @RequestParam(value = "size", defaultValue = "5") int size) {
-        PageHelper.startPage(start,size);
-        List<Category> cs =categoryService.list(start, size);
+        PageHelper.startPage(start, size);
+        List<Category> cs =categoryService.list();
         PageInfo<Category> page = new PageInfo<>(cs);
         m.addAttribute("page", page);
         return "listCategory";
@@ -45,10 +49,16 @@ public class CategoryController {
         return "redirect:listCategory";
     }
     @RequestMapping("/editCategory")
-    public String listCategory(int id,Model m) throws Exception {
+    public String editCategory(int id,Model m) throws Exception {
         Category c= categoryService.get(id);
         m.addAttribute("c", c);
         return "editCategory";
     }
-     
+    @RequestMapping("/getCategory")
+    public String getCategory(int id) throws Exception {
+        Category category = categoryService.get(id);
+        LOGGER.info("获取id为: {} 的信息", id);
+        return "listCategory";
+    }
+
 }
