@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -19,16 +20,17 @@ import java.util.Map;
  * Druid连接池配置
  */
 @Configuration
+@EnableTransactionManagement
 public class DruidConfig {
 
-    @Value("${spring.datasource.username}")
+    @Value("${spring.datasource.druid.username}")
     private String loginUsername;
 
-    @Value("${spring.datasource.password}")
+    @Value("${spring.datasource.druid.password}")
     private String loginPassword;
 
     //加载application.yaml中的Druid配置
-    @ConfigurationProperties(prefix = "spring.datasource")
+    @ConfigurationProperties(prefix = "spring.datasource.druid")
     @Bean
     public DataSource druid() {
         return new DruidDataSource();
@@ -58,17 +60,10 @@ public class DruidConfig {
     public FilterRegistrationBean webStatFilter() {
 
         FilterRegistrationBean bean = new FilterRegistrationBean(new WebStatFilter());
-        // 添加过滤规则
-        Map<String, String> initParams = new HashMap<>(1);
-        // 设置忽略请求
-        initParams.put("exclusions", "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*");
-        bean.setInitParameters(initParams);
-        bean.addInitParameter("profileEnable", "true");
-        bean.addInitParameter("principalCookieName", "USER_COOKIE");
-        bean.addInitParameter("principalSessionName", "");
-        bean.addInitParameter("aopPatterns", "com.example.demo.service");
-        // 验证所有请求
+        //添加过滤规则.
         bean.addUrlPatterns("/*");
+        //添加不需要忽略的格式信息.
+        bean.addInitParameter("exclusions","*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
         return bean;
     }
 }

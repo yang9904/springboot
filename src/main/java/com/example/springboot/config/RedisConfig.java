@@ -18,7 +18,6 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
 
     private RedisSerializer<String> keySerializer() {
-
         return new StringRedisSerializer();
     }
 
