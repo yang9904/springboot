@@ -34,7 +34,7 @@ public class WebLogAspect  {
     }
 
     @Before("WebLog()")
-    public void doBefore(JoinPoint joinPoint) throws Throwable {
+    public void doBefore(JoinPoint joinPoint) {
         //开始打印请求日志
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
@@ -57,13 +57,6 @@ public class WebLogAspect  {
     public void doAfter() throws Throwable{
         //接口结束后换行，方便分割查看
         LOGGER.info("=============== End ===============");
-    }
-
-    @AfterThrowing(value = "WebLog()", throwing = "e")
-    public void doThrow(JoinPoint joinPoint, Exception e) {
-        Signature signature = joinPoint.getSignature();
-        String name = signature.getName();
-        LOGGER.info("异常信息：{}:{}", name, e.getMessage());
     }
 
 }
