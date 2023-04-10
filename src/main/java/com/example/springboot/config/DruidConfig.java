@@ -29,7 +29,7 @@ public class DruidConfig {
     @Value("${spring.datasource.druid.password}")
     private String loginPassword;
 
-    //加载application.yaml中的Druid配置
+    //加载application.yml中的Druid配置
     @ConfigurationProperties(prefix = "spring.datasource.druid")
     @Bean
     public DataSource druid() {

@@ -1,5 +1,6 @@
 package com.example.springboot.Controller;
 
+import com.example.springboot.common.WebLog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
@@ -17,12 +18,12 @@ import java.util.List;
 
 @Controller
 public class CategoryController {
-    private final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
 
     @Autowired
     CategoryService categoryService;
 
     @RequestMapping("/listCategory")
+    @WebLog
     public String listCategory(Model m, @RequestParam(value = "start", defaultValue = "1") int start,
                                @RequestParam(value = "size", defaultValue = "5") int size) {
         PageHelper.startPage(start, size);
@@ -55,9 +56,9 @@ public class CategoryController {
         return "editCategory";
     }
     @RequestMapping("/getCategory")
+    @WebLog
     public String getCategory(int id) throws Exception {
         Category category = categoryService.get(id);
-        LOGGER.info("获取id为: {} 的信息", id);
         return "listCategory";
     }
 
