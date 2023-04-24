@@ -3,8 +3,6 @@ package com.example.springboot.Controller;
 import com.example.springboot.common.WebLog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,17 +42,20 @@ public class CategoryController {
         categoryService.delete(c.getId());
         return "redirect:listCategory";
     }
+
     @RequestMapping("/updateCategory")
     public String updateCategory(Category c) throws Exception {
         categoryService.update(c);
         return "redirect:listCategory";
     }
+
     @RequestMapping("/editCategory")
     public String editCategory(int id,Model m) throws Exception {
         Category c= categoryService.get(id);
         m.addAttribute("c", c);
         return "editCategory";
     }
+
     @RequestMapping("/getCategory")
     @WebLog
     public String getCategory(int id) throws Exception {
