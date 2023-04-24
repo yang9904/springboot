@@ -25,7 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> list =  categoryMapper.findAll();
         return list;
     }
- 
+
     @Override
     @Cacheable(value = "category", key = "'category '+ #p0")
     public Category get(int id) {
