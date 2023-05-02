@@ -63,4 +63,10 @@ public class CategoryController {
         return "listCategory";
     }
 
+    @RequestMapping("/loadToES")
+    public String loadToES() {
+        categoryService.contextLoads();
+        return "listCategory";
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.springboot.Service;
 
 import com.example.springboot.Bean.Category;
+import com.example.springboot.Bean.Goods;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ public interface CategoryService {
     void update(Category category);
      
     Category get(int id);
+
+    Goods buildGoods(Category category);
+
+    void contextLoads();
 }
