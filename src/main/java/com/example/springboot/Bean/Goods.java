@@ -1,28 +1,47 @@
 package com.example.springboot.Bean;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Document(indexName = "test")
+import java.time.LocalDateTime;
+
+@Document(indexName = "goods")
 public class Goods {
 
     @Id
-    private int id;
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
+    @Field(type = FieldType.Keyword)
+    private String id;
+
+    @Field(type = FieldType.Text, analyzer = "ik_smart")
     private String name;
-    public int getId() {
+
+    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX")
+    private LocalDateTime createTime;
+
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+
+    public void setId(String id) {
         this.id = id;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
 
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
 }

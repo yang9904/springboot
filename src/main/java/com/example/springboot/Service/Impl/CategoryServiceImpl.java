@@ -1,5 +1,9 @@
 package com.example.springboot.Service.Impl;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
+import co.elastic.clients.elasticsearch.core.IndexRequest;
 import com.example.springboot.Bean.Category;
 import com.example.springboot.Bean.Goods;
 import com.example.springboot.Mapper.CategoryMapper;
@@ -11,19 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
-    @Resource
-    private ElasticsearchRestTemplate elasticsearchRestTemplate;
+    @Autowired
+    private ElasticsearchClient client;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -61,28 +63,31 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.update(category);
     }
 
-    @Override
     public Goods buildGoods(Category category) {
         Goods goods = new Goods();
-        goods.setId(category.getId());
         goods.setName(category.getName());
         return goods;
     }
 
     @Override
-    public void contextLoads() {
-        elasticsearchRestTemplate.createIndex(Goods.class);
-        elasticsearchRestTemplate.putMapping(Goods.class);
-        List<Category> categoryList = categoryMapper.findAll();
-        List<Goods> goodsList = categoryList.stream().map(category -> {
-            try {
-                return buildGoods(category);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return null;
-        }).collect(Collectors.toList());
-        categoryRepository.saveAll(goodsList);
+    public void contextAll() throws IOException {
+        Goods goods = new Goods();
+        goods.setId("1212");
+        goods.setName("搜索引擎测试1");
+        IndexRequest<Object> indexRequest = new IndexRequest.Builder<>()
+                .index("products")
+                .id(goods.getId())
+                .document(goods)
+                .build();
+        client.index(indexRequest);
+        Goods goods1 = new Goods();
+        goods1.setId("1213");
+        goods1.setName("搜索引擎测试2");
+        client.index(builder -> builder
+                .index("products")
+                .id(goods1.getId())
+                .document(goods1)
+        );
     }
 
 }

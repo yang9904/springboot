@@ -3,6 +3,7 @@ package com.example.springboot.Service;
 import com.example.springboot.Bean.Category;
 import com.example.springboot.Bean.Goods;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -18,7 +19,5 @@ public interface CategoryService {
      
     Category get(int id);
 
-    Goods buildGoods(Category category);
-
-    void contextLoads();
+    void contextAll() throws IOException;
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.springboot.Bean.Category;
 import com.example.springboot.Service.CategoryService;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -64,8 +65,8 @@ public class CategoryController {
     }
 
     @RequestMapping("/loadToES")
-    public String loadToES() {
-        categoryService.contextLoads();
+    public String loadToES() throws IOException {
+        categoryService.contextAll();
         return "listCategory";
     }
 
