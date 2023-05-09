@@ -9,12 +9,15 @@ import com.example.springboot.Bean.Goods;
 import com.example.springboot.Mapper.CategoryMapper;
 import com.example.springboot.Service.CategoryService;
 import com.example.springboot.repository.CategoryRepository;
+import org.elasticsearch.client.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,7 +34,13 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryMapper categoryMapper;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    ElasticsearchOperations operations;
+
+    @Autowired
+    ElasticsearchClient elasticsearchClient;
+
+    @Autowired
+    RestClient restClient;
 
     @Override
     public List<Category> list() {
