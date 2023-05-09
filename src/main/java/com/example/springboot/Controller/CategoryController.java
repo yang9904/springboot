@@ -70,4 +70,10 @@ public class CategoryController {
         return "listCategory";
     }
 
+    @RequestMapping("/queryES")
+    public String queryES(String id) throws IOException {
+        categoryService.query(id);
+        return "listCategory";
+    }
+
 }

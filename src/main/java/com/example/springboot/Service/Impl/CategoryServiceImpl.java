@@ -1,26 +1,27 @@
 package com.example.springboot.Service.Impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.BulkRequest;
-import co.elastic.clients.elasticsearch.core.BulkResponse;
-import co.elastic.clients.elasticsearch.core.IndexRequest;
 import com.example.springboot.Bean.Category;
 import com.example.springboot.Bean.Goods;
 import com.example.springboot.Mapper.CategoryMapper;
 import com.example.springboot.Service.CategoryService;
-import com.example.springboot.repository.CategoryRepository;
-import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
+import org.springframework.data.elasticsearch.core.query.IndexQuery;
+import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -28,19 +29,10 @@ public class CategoryServiceImpl implements CategoryService {
     private final Logger LOGGER = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Autowired
-    private ElasticsearchClient client;
-
-    @Autowired
     private CategoryMapper categoryMapper;
 
     @Autowired
-    ElasticsearchOperations operations;
-
-    @Autowired
-    ElasticsearchClient elasticsearchClient;
-
-    @Autowired
-    RestClient restClient;
+    private ElasticsearchOperations elasticsearchOperations;
 
     @Override
     public List<Category> list() {
@@ -79,24 +71,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void contextAll() throws IOException {
-        Goods goods = new Goods();
-        goods.setId("1212");
-        goods.setName("搜索引擎测试1");
-        IndexRequest<Object> indexRequest = new IndexRequest.Builder<>()
-                .index("products")
-                .id(goods.getId())
-                .document(goods)
+    public void save(Goods goods) {
+        IndexQuery indexQuery = new IndexQueryBuilder()
+                .withId(goods.getId())
+                .withObject(goods)
                 .build();
-        client.index(indexRequest);
-        Goods goods1 = new Goods();
-        goods1.setId("1213");
-        goods1.setName("搜索引擎测试2");
-        client.index(builder -> builder
-                .index("products")
-                .id(goods1.getId())
-                .document(goods1)
-        );
+    }
+
+    @Override
+    public void contextAll() {
+
+    }
+
+    @Override
+    public Goods query(String id) {
+        return new Goods();
     }
 
 }

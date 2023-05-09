@@ -12,13 +12,12 @@ import java.time.LocalDateTime;
 public class Goods {
 
     @Id
-    @Field(type = FieldType.Keyword)
     private String id;
 
     @Field(type = FieldType.Text, analyzer = "ik_smart")
     private String name;
 
-    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSX")
+    @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime createTime;
 
     public String getId() {
