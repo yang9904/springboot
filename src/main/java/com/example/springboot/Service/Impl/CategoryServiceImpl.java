@@ -4,24 +4,19 @@ import com.example.springboot.Bean.Category;
 import com.example.springboot.Bean.Goods;
 import com.example.springboot.Mapper.CategoryMapper;
 import com.example.springboot.Service.CategoryService;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.ReactiveElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.Query;
-import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -80,12 +75,22 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void contextAll() {
-
+        Goods goods = new Goods();
+        goods.setId("15153");
+        goods.setName("饭卡是否都是客服号");
+        goods.setCreateTime(LocalDateTime.now());
+        IndexQuery indexQuery = new IndexQueryBuilder()
+                .withId(goods.getId())
+                .withObject(goods)
+                .build();
+        elasticsearchOperations.index(indexQuery, IndexCoordinates.of("goods"));
     }
 
     @Override
     public Goods query(String id) {
-        return new Goods();
+        Goods goods = elasticsearchOperations.get(id, Goods.class);
+        LOGGER.info("查询结果为{}, {}, {}", goods.getId(), goods.getName(), goods.getCreateTime());
+        return goods;
     }
 
 }

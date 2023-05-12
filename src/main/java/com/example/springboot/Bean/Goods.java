@@ -5,6 +5,7 @@ import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public class Goods {
     @Field(type = FieldType.Text, analyzer = "ik_smart")
     private String name;
 
-    @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd'T'HH:mm:ss")
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second_millis, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime createTime;
 
     public String getId() {
